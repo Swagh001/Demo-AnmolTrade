@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
 
         const encryptedAccessToken = await global.encrypt(accessToken, key);
 
-        const userQuery = 'SELECT * FROM userData WHERE Email = ?';
+        const userQuery = 'SELECT * FROM UserData WHERE Email = ?';
         db.execute(userQuery, [mail],async(error,data)=>{
             if (error) {
                 console.error(error);
@@ -64,7 +64,7 @@ router.delete("/:id", async (req, res) => {
     const { dhanClientId } = req.body;
 
     try {
-        const userQuery = 'SELECT DematAcc FROM userdata WHERE id = ?';
+        const userQuery = 'SELECT DematAcc FROM UserData WHERE id = ?';
         db.execute(userQuery, [id],async(err,result)=>{
             if (err) {
                 console.error(err);
@@ -92,7 +92,7 @@ router.delete("/:id", async (req, res) => {
             dematAccArray.splice(dhanAccIndex, 1);
             const updatedDematAcc = JSON.stringify(dematAccArray);
 
-            const updateQuery = 'UPDATE userdata SET DematAcc = ? WHERE id = ?';
+            const updateQuery = 'UPDATE UserData SET DematAcc = ? WHERE id = ?';
             db.query(updateQuery, [updatedDematAcc, id]);
 
             return res.status(200).json({ message: "Dhan account deleted successfully" });

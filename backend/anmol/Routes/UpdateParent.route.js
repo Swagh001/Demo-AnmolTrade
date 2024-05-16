@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
         const mail = req.user.email;
         const {clientID} = req.body;
 
-        const userQuery = 'SELECT * FROM userData WHERE Email = ?';
+        const userQuery = 'SELECT * FROM UserData WHERE Email = ?';
 
         db.execute(userQuery, [mail], async (error, data) => {
             if (error) {
@@ -37,10 +37,6 @@ router.post("/", async (req, res) => {
             db.execute(updateQuery, [updatedDematAcc, mail],()=>{
                 return res.status(200).json({ message: "Parent Account Updated successfully" });
             });
-
-            // await db.execute(updateQuery, [updatedDematAcc, mail]);
-
-            // return res.status(200).json({ message: "Parent Account Updated successfully" });
         })
     } 
     catch (error) {

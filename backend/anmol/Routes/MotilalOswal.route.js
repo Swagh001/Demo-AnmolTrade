@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
         const encryptedAPIKey = await global.encrypt(APIKey, key);
         const encryptedPAN = await global.encrypt(PAN, key);
 
-        const userQuery = 'SELECT * FROM userData WHERE Email = ?';
+        const userQuery = 'SELECT * FROM UserData WHERE Email = ?';
         db.execute(userQuery, [mail],async(error,data)=>{
             if (error) {
                 console.error(error);
@@ -74,7 +74,7 @@ router.delete("/:id", async (req, res) => {
     const { MotilalOswalClientId } = req.body;
 
     try {
-        const userQuery = 'SELECT DematAcc FROM userdata WHERE id = ?';
+        const userQuery = 'SELECT DematAcc FROM UserData WHERE id = ?';
         db.execute(userQuery, [id],async(err,result)=>{
             if (err) {
                 console.error(err);
@@ -106,7 +106,7 @@ router.delete("/:id", async (req, res) => {
 
             console.log(updatedDematAcc);
 
-            const updateQuery = 'UPDATE userdata SET DematAcc = ? WHERE id = ?';
+            const updateQuery = 'UPDATE UserData SET DematAcc = ? WHERE id = ?';
             db.query(updateQuery, [updatedDematAcc, id]);
 
             return res.status(200).json({ message: "Motilal Oswal account deleted successfully" });

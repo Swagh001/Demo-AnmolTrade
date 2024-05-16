@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
         const encryptedPassword = await global.encrypt(password, key);
         const encryptedTOTPKey = await global.encrypt(TOTPKey, key);
 
-        const userQuery = 'SELECT * FROM userdata WHERE Email = ?';
+        const userQuery = 'SELECT * FROM UserData WHERE Email = ?';
         db.execute(userQuery, [mail], async (error, data) => {
             if (error) {
                 console.error(error);
@@ -66,7 +66,7 @@ router.delete("/:id", async (req, res) => {
     const { aliceBlueClientId } = req.body;
 
     try {
-        const userQuery = 'SELECT DematAcc FROM userdata WHERE id = ?';
+        const userQuery = 'SELECT DematAcc FROM UserData WHERE id = ?';
         db.execute(userQuery, [id],async(err,result)=>{
 
             if (err) {
@@ -97,7 +97,7 @@ router.delete("/:id", async (req, res) => {
             dematAccArray.splice(aliceBlueAccIndex, 1);
             const updatedDematAcc = JSON.stringify(dematAccArray);
 
-            const updateQuery = 'UPDATE userdata SET DematAcc = ? WHERE id = ?';
+            const updateQuery = 'UPDATE UserData SET DematAcc = ? WHERE id = ?';
             db.query(updateQuery, [updatedDematAcc, id]);
 
             return res.status(200).json({ message: "AliceBlue account deleted successfully" });
