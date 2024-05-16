@@ -6,6 +6,7 @@ const key = process.env.Encrypt_Key;
 
 router.post("/", async (req, res) => {
     try {
+        console.log("Hii")
         const mail = req.user.email;
         const {
             clientID,
