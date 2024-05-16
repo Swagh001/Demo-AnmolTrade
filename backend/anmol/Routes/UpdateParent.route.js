@@ -18,7 +18,8 @@ router.post("/", async (req, res) => {
                 console.error(error);
                 return res.status(500).json({ error: "Internal server error" });
             }
-            const userdata = data[0].DematAcc;
+            let userdata = data[0].DematAcc;
+            userdata = JSON.parse(userdata);
 
             let dematAcc = userdata.map((ele,ind)=>{
                 if(ele.clientID===clientID){

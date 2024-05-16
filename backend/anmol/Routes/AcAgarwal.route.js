@@ -34,6 +34,7 @@ router.post("/", async (req, res) => {
             }
 
             const dematAcc = userdata[0].DematAcc ? (userdata[0].DematAcc) : [];
+            dematAcc = JSON.parse(dematAcc);
             const clientExists = dematAcc.some(acc => acc.clientID === clientID);
             
             if (clientExists) {
@@ -85,6 +86,7 @@ router.delete("/:id", async (req, res) => {
             }
 
             let dematAcc = userdata.DematAcc || '[]';
+            dematAcc = JSON.parse(dematAcc);
             const dematAccArray = (dematAcc);
 
             console.log(dematAccArray);

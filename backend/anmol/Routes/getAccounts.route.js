@@ -15,16 +15,19 @@ router.get("/", async (req, res) => {
                 console.error(error);
                 return res.status(500).json({ error: "Internal server error" });
             }
-            const userdata = data[0].DematAcc;
-
-            let name = userdata.map((ele,ind)=>{
-                // console.log(ele)
-                return {broker:ele.BrokerName,email:ele.eMail,ClientId:ele.clientID,isParent:ele.parentAcc};
-            })
+            let userdata = data[0].DematAcc;
+            userdata = JSON.parse(userdata);
+            // console.log(userdata);
+            
+            let name = userdata.map((ele, ind) => {
+                console.log(ele);
+                return {broker:ele.BrokerName,email:ele.Email,ClientId:ele.clientID,isParent:ele.parentAcc};
+            });
 
             res.send(name);
         });
-    } catch (error) {
+    }
+    catch (error) {
         console.error("Error fetching DematAcc:", error);
         return res.status(500).json({ error: "Internal server error" });
     }

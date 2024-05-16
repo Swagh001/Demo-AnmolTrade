@@ -26,17 +26,19 @@ router.post("/", async (req, res) => {
                 return res.status(500).json({ error: "Internal server error" });
             }
             const userdata = data;
+            console.log(userdata);
 
             if (!userdata || userdata.length === 0) {
                 return res.status(404).json({ error: "User not found" });
             }
 
-            const dematAcc = userdata[0].DematAcc ? (userdata[0].DematAcc) : [];
-            // const clientExists = dematAcc.some(acc => acc.clientID === clientID);
+            let dematAcc = userdata ? (userdata) : [];
+            dematAcc = JSON.parse(dematAcc);
+            const clientExists = dematAcc.some(acc => acc.clientID === clientID);
             
-            // if (clientExists) {
-            //     return res.status(400).json({ error: "Client ID already linked to another account" });
-            // }
+            if (clientExists) {
+                return res.status(400).json({ error: "Client ID already linked to another account" });
+            }
 
             const parentAccValue = dematAcc.length === 0 ? true : false;
             dematAcc.push({ 
@@ -82,6 +84,7 @@ router.delete("/:id", async (req, res) => {
             }
 
             let dematAcc = userdata.DematAcc || '[]';
+            dematAcc = JSON.parse(dematAcc);
             const dematAccArray = (dematAcc);
 
             // console.log(dematAccArray);

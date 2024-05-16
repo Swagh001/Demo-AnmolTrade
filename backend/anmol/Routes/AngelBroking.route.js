@@ -35,7 +35,8 @@ router.post("/", async (req, res) => {
                 return res.status(404).json({ error: "User not found" });
             }
 
-            const dematAcc = userdata[0].DematAcc ? (userdata[0].DematAcc) : [];
+            let dematAcc = userdata[0].DematAcc ? (userdata[0].DematAcc) : [];
+            dematAcc = JSON.parse(dematAcc);
             const clientExists = dematAcc.some(acc => acc.clientID === clientID);
             
             if (clientExists) {
@@ -87,6 +88,7 @@ router.delete("/:id", async (req, res) => {
             }
 
             let dematAcc = userdata.DematAcc || '[]';
+            dematAcc = JSON.parse(dematAcc);
             const dematAccArray = (dematAcc);
 
             const angelBrokingAccIndex = dematAccArray.findIndex(acc => {
