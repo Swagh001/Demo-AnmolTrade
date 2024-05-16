@@ -32,9 +32,13 @@ router.post("/", async (req, res) => {
                 return res.status(404).json({ error: "User not found" });
             }
 
-            let dematAcc = userdata ? (userdata) : [];
-            dematAcc = JSON.parse(dematAcc);
-            const clientExists = dematAcc.some(acc => acc.clientID === clientID);
+            // let dematAcc = userdata ? (userdata) : [];
+            // dematAcc = JSON.parse(dematAcc);
+            // const clientExists = dematAcc.some(acc => acc.clientID === clientID);
+            let dematAcc = userdata[0].DematAcc ? JSON.parse(userdata[0].DematAcc) : [];
+
+dematAcc = Array.isArray(dematAcc) ? dematAcc : [];
+const clientExists = dematAcc.some(acc => acc.clientID === clientID);
             
             if (clientExists) {
                 return res.status(400).json({ error: "Client ID already linked to another account" });
