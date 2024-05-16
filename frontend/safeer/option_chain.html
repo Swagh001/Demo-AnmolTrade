@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option Chain Data</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #tableview {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+Nifty
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: lightgray;
+        }
+
+        #option_chain th {
+            background-color: #90EE90;
+        }
+
+        .call-cell {
+            background-color: lightyellow;
+        }
+
+        .put-cell {
+            background-color: lightcyan;
+        }
+
+        .strike-price {
+            background-color: lightsalmon
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Option Chain Data</h1>
+
+    <p>Nifty: <span id="niftyPrice"></span></p>
+    <div id="optionChainData"></div>
+    <div>
+        <label for="date">Select Expiry Date:</label>
+        <select id="date" onchange="filterData()">
+
+        </select>
+    </div>
+    <div id="tableview">
+        <table border="1" id="tablecont">
+            <thead>
+                <tr>
+                    <th colspan="11">CALLS</th>
+                    <th></th>
+                    <th colspan="11">PUTS</th>
+                </tr>
+                <tr>
+                    <th>EXP DATE</th>
+                    <th>OI</th>
+                    <th>Change in OI</th>
+                    <th>Volume</th>
+                    <th>IV</th>
+                    <th>LTP</th>
+                    <th>CHNG</th>
+                    <th>BID QTY</th>
+                    <th>BID</th>
+                    <th>ASK</th>
+                    <th>ASK QTY</th>
+                    <th>STRIKE</th>
+                    <th>OI</th>
+                    <th>Change in OI</th>
+                    <th>Volume</th>
+                    <th>IV</th>
+                    <th>LTP</th>
+                    <th>CHNG</th>
+                    <th>BID QTY</th>
+                    <th>BID</th>
+                    <th>ASK</th>
+                    <th>ASK QTY</th>
+                </tr>
+            </thead>
+            <tbody id="option_chain">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let optionChainData = [];
+        let niftyPrice = 0;
+        let strikePrice = 0;
+
+        async function fetchOptionChain() {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/api/option-chain`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                optionChainData = data; // Store the fetched data in the global variable
+                niftyPrice = optionChainData[0].PE.underlyingValue
+                console.log('niftyPrice', niftyPrice);
+                console.log('optionChainData', optionChainData);
+                populateExpiryDates();
+                displayNiftyPrice();
+                strikePrice = calculateStrikePrice(niftyPrice, 50);
+                console.log("Nifty Price:", niftyPrice);
+                console.log("Strike Price:", strikePrice);
+            } catch (error) {
+                console.error('Error fetching option chain data:', error);
+                return { message: `Error fetching data: ${error.message}` };
+            }
+        }
+
+        // Function to populate the select options with expiry dates sorted by date
+        function populateExpiryDates() {
+            const selectDate = document.getElementById('date');
+            const uniqueExpiryDates = [...new Set(optionChainData.map(item => item.expiryDate))];
+            uniqueExpiryDates.sort((a, b) => new Date(a) - new Date(b));
+            selectDate.innerHTML = '<option value="0">Select Expiry Date</option>';
+            uniqueExpiryDates.forEach(date => {
+                const option = document.createElement('option');
+                option.value = date;
+                option.textContent = date;
+                selectDate.appendChild(option);
+            });
+
+            // Select the first option
+            if (uniqueExpiryDates.length > 0) {
+                selectDate.value = uniqueExpiryDates[0];
+                // Filter and display data for the first date
+                const filteredData = optionChainData.filter(item => item.expiryDate === uniqueExpiryDates[0]);
+                strikePrice = calculateStrikePrice(niftyPrice, 50);
+                displaydata(filteredData);
+            }
+        }
+
+        function displayNiftyPrice() {
+            const niftyPriceElement = document.getElementById('niftyPrice');
+            niftyPriceElement.textContent = niftyPrice;
+        }
+
+        function calculateStrikePrice(niftyPrice, interval) {
+            const roundedPrice = Math.round(niftyPrice / interval) * interval;
+            return roundedPrice;
+        }
+
+        fetchOptionChain();
+        setInterval(fetchOptionChain, 1000);
+
+
+        function filterData() {
+            const selectedDate = document.getElementById('date').value;
+
+            let filteredData = optionChainData.filter(item => item.expiryDate === selectedDate);
+
+            console.log('filteredData', filteredData);
+
+            displaydata(filteredData);
+        }
+
+        async function displaydata(data) {
+            try {
+                let optionChainTable = document.getElementById("option_chain");
+                optionChainTable.innerHTML = "";
+
+                data.forEach(entry => {
+                    let row = optionChainTable.insertRow();
+
+                    // CALLS data
+                    let oi01 = entry.CE ? entry.CE.openInterest : '-';
+                    let oi02 = entry.CE ? entry.CE.changeinOpenInterest : '-';
+                    let oi03 = entry.CE ? entry.CE.totalTradedVolume : '-';
+                    let oi04 = entry.CE ? entry.CE.impliedVolatility : '-';
+                    let oi05 = entry.CE ? entry.CE.lastPrice : '-';
+                    let oi06 = entry.CE ? entry.CE.change.toFixed(2) : '-';
+                    let oi07 = entry.CE ? entry.CE.bidQty : '-';
+                    let oi08 = entry.CE ? entry.CE.bidprice : '-';
+                    let oi09 = entry.CE ? entry.CE.askPrice : '-';
+                    let oi10 = entry.CE ? entry.CE.askQty : '-';
+
+                    let oi11 = entry.CE ? entry.strikePrice : '-';
+
+                    // PUTS data
+                    let oi12 = entry.PE ? entry.PE.openInterest : '-';
+                    let oi13 = entry.PE ? entry.PE.changeinOpenInterest : '-';
+                    let oi14 = entry.PE ? entry.PE.totalTradedVolume : '-';
+                    let oi15 = entry.PE ? entry.PE.impliedVolatility : '-';
+                    let oi16 = entry.PE ? entry.PE.lastPrice : '-';
+                    let oi17 = entry.PE ? entry.PE.change.toFixed(2) : '-';
+                    let oi18 = entry.PE ? entry.PE.bidQty : '-';
+                    let oi19 = entry.PE ? entry.PE.bidprice : '-';
+                    let oi20 = entry.PE ? entry.PE.askPrice : '-';
+                    let oi21 = entry.PE ? entry.PE.askQty : '-';
+
+                    let oi22 = entry.expiryDate ? entry.expiryDate : '-';
+
+                    let cells = [oi22, oi01, oi02, oi03, oi04, oi05, oi06, oi07, oi08, oi09, oi10, oi11,
+                        oi12, oi13, oi14, oi15, oi16, oi17, oi18, oi19, oi20, oi21];
+
+                    cells.forEach((cellData, index) => {
+                        let cell = row.insertCell();
+                        cell.textContent = cellData === 0 ? '-' : cellData;
+                        if (index > 0 && index < 11) {
+                            cell.classList.add('call-cell');
+                        } else if (index > 11) {
+                            cell.classList.add('put-cell');
+                        }
+
+                        if (index === 11) {
+                            if (strikePrice == entry.strikePrice) {
+                                console.log('Strike Price Matched!');
+                                cell.classList.add('strike-price');
+                            }
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Error fetching and displaying data:', error);
+            }
+        }
+    </script>
+</body>
+
+</html>
