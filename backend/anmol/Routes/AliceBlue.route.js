@@ -31,8 +31,8 @@ router.post("/", async (req, res) => {
                 return res.status(404).json({ error: "User not found" });
             }
 
-            const dematAcc = userdata[0].DematAcc ? (userdata[0].DematAcc) : [];
-            const clientExists = dematAcc.some(acc => acc.clientID === clientID);
+            // const dematAcc = userdata[0].DematAcc ? (userdata[0].DematAcc) : [];
+            // const clientExists = dematAcc.some(acc => acc.clientID === clientID);
             
             if (clientExists) {
                 return res.status(400).json({ error: "Client ID already linked to another account" });
