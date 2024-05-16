@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
                 return res.status(404).json({ error: "User not found" });
             }
 
-            // const dematAcc = userdata[0].DematAcc ? (userdata[0].DematAcc) : [];
+            const dematAcc = userdata[0].DematAcc ? (userdata[0].DematAcc) : [];
             // const clientExists = dematAcc.some(acc => acc.clientID === clientID);
             
             // if (clientExists) {
