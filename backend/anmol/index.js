@@ -63,7 +63,7 @@ function createTable() {
         Password VARCHAR(255) NOT NULL,
         phoneNo VARCHAR(20) NOT NULL,
         Email VARCHAR(255) NOT NULL UNIQUE,
-        DematAcc JSON  -- Store JSON array
+        DematAcc TEXT
     )    
     `;
     
