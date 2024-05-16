@@ -34,7 +34,7 @@ router.post("/", async (req, res) => {
             }
 
             const dematAcc = userdata[0].DematAcc ? (userdata[0].DematAcc) : [];
-            const clientExists = dematAcc.some(acc => acc.ACAgarwal && acc.ACAgarwal.clientID === clientID);
+            const clientExists = dematAcc.some(acc => acc.clientID === clientID);
             
             if (clientExists) {
                 return res.status(400).json({ error: "Client ID already linked to another account" });
