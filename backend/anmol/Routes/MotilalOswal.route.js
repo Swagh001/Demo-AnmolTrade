@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
         const encryptedAPIKey = await global.encrypt(APIKey, key);
         const encryptedPAN = await global.encrypt(PAN, key);
 
-        const userQuery = 'SELECT * FROM userdata WHERE Email = ?';
+        const userQuery = 'SELECT * FROM userData WHERE Email = ?';
         db.execute(userQuery, [mail],async(error,data)=>{
             if (error) {
                 console.error(error);

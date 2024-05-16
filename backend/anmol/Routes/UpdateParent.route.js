@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
         const mail = req.user.email;
         const {clientID} = req.body;
 
-        const userQuery = 'SELECT * FROM userdata WHERE Email = ?';
+        const userQuery = 'SELECT * FROM userData WHERE Email = ?';
 
         db.execute(userQuery, [mail], async (error, data) => {
             if (error) {

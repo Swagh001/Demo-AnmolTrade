@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
 
         const encryptedPassword = await global.encrypt(password, key);
 
-        const userQuery = 'SELECT * FROM userdata WHERE Email = ?';
+        const userQuery = 'SELECT * FROM userData WHERE Email = ?';
         db.execute(userQuery, [mail],async(error,data)=>{
             if (error) {
                 console.error(error);
