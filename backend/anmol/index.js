@@ -23,7 +23,7 @@ const userRoutes = require('./Routes/User.route');
 const connection = require("./config/bd");
 const UpdateParentRoute = require("./Routes/UpdateParent.route");
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT;
 
 app.get('/', (req, res) => {
     res.send('server is working');
@@ -63,7 +63,7 @@ function createTable() {
         Password VARCHAR(255) NOT NULL,
         phoneNo VARCHAR(20) NOT NULL,
         Email VARCHAR(255) NOT NULL UNIQUE,
-        DematAcc JSON  -- Store JSON array NOT NULL
+        DematAcc TEXT NOT NULL
     )    
     `;
     

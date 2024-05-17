@@ -11,14 +11,15 @@ router.post("/", async (req, res) => {
         const mail = req.user.email;
         const {clientID} = req.body;
 
-        const userQuery = 'SELECT * FROM userdata WHERE Email = ?';
+        const userQuery = 'SELECT * FROM UserData WHERE Email = ?';
 
         db.execute(userQuery, [mail], async (error, data) => {
             if (error) {
                 console.error(error);
                 return res.status(500).json({ error: "Internal server error" });
             }
-            const userdata = data[0].DematAcc;
+            let userdata = data[0].DematAcc;
+            userdata = JSON.parse(userdata);
 
             let dematAcc = userdata.map((ele,ind)=>{
                 if(ele.clientID===clientID){
@@ -37,10 +38,6 @@ router.post("/", async (req, res) => {
             db.execute(updateQuery, [updatedDematAcc, mail],()=>{
                 return res.status(200).json({ message: "Parent Account Updated successfully" });
             });
-
-            // await db.execute(updateQuery, [updatedDematAcc, mail]);
-
-            // return res.status(200).json({ message: "Parent Account Updated successfully" });
         })
     } 
     catch (error) {

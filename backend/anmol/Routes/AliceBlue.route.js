@@ -6,6 +6,7 @@ const key = process.env.Encrypt_Key;
 
 router.post("/", async (req, res) => {
     try {
+        console.log("Hii")
         const mail = req.user.email;
         const {
             clientID,
@@ -18,20 +19,26 @@ router.post("/", async (req, res) => {
         const encryptedPassword = await global.encrypt(password, key);
         const encryptedTOTPKey = await global.encrypt(TOTPKey, key);
 
-        const userQuery = 'SELECT * FROM userdata WHERE Email = ?';
+        const userQuery = 'SELECT * FROM UserData WHERE Email = ?';
         db.execute(userQuery, [mail], async (error, data) => {
             if (error) {
                 console.error(error);
                 return res.status(500).json({ error: "Internal server error" });
             }
             const userdata = data;
+            console.log(userdata);
 
             if (!userdata || userdata.length === 0) {
                 return res.status(404).json({ error: "User not found" });
             }
 
-            const dematAcc = userdata[0].DematAcc ? (userdata[0].DematAcc) : [];
-            const clientExists = dematAcc.some(acc => acc.AliceBlue && acc.AliceBlue.clientID === clientID);
+            // let dematAcc = userdata ? (userdata) : [];
+            // dematAcc = JSON.parse(dematAcc);
+            // const clientExists = dematAcc.some(acc => acc.clientID === clientID);
+            let dematAcc = userdata[0].DematAcc ? JSON.parse(userdata[0].DematAcc) : [];
+
+dematAcc = Array.isArray(dematAcc) ? dematAcc : [];
+const clientExists = dematAcc.some(acc => acc.clientID === clientID);
             
             if (clientExists) {
                 return res.status(400).json({ error: "Client ID already linked to another account" });
@@ -61,12 +68,13 @@ router.post("/", async (req, res) => {
     }
 });
 
-router.delete("/:id", async (req, res) => {
-    const { id } = req.params;
+router.delete("/delete", async (req, res) => {
+    // const { id } = req.params;
+    const id = req.user.email;
     const { aliceBlueClientId } = req.body;
 
     try {
-        const userQuery = 'SELECT DematAcc FROM userdata WHERE id = ?';
+        const userQuery = 'SELECT DematAcc FROM UserData WHERE Email = ?';
         db.execute(userQuery, [id],async(err,result)=>{
 
             if (err) {
@@ -81,6 +89,7 @@ router.delete("/:id", async (req, res) => {
             }
 
             let dematAcc = userdata.DematAcc || '[]';
+            dematAcc = JSON.parse(dematAcc);
             const dematAccArray = (dematAcc);
 
             // console.log(dematAccArray);
@@ -97,7 +106,7 @@ router.delete("/:id", async (req, res) => {
             dematAccArray.splice(aliceBlueAccIndex, 1);
             const updatedDematAcc = JSON.stringify(dematAccArray);
 
-            const updateQuery = 'UPDATE userdata SET DematAcc = ? WHERE id = ?';
+            const updateQuery = 'UPDATE UserData SET DematAcc = ? WHERE Email = ?';
             db.query(updateQuery, [updatedDematAcc, id]);
 
             return res.status(200).json({ message: "AliceBlue account deleted successfully" });
