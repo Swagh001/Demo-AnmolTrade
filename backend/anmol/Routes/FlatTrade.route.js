@@ -65,11 +65,12 @@ const clientExists = dematAcc.some(acc => acc.clientID === clientID);
 });
 
 router.delete("/:id", async (req, res) => {
-    const { id } = req.params;
+    // const { id } = req.params;
+    const id = req.user.email;
     const { flatTradeClientId } = req.body;
 
     try {
-        const userQuery = 'SELECT DematAcc FROM UserData WHERE id = ?';
+        const userQuery = 'SELECT DematAcc FROM UserData WHERE Email = ?';
         db.execute(userQuery, [id],async(err,result)=>{
             if (err) {
                 console.error(err);
@@ -102,7 +103,7 @@ router.delete("/:id", async (req, res) => {
 
             console.log(updatedDematAcc);
 
-            const updateQuery = 'UPDATE UserData SET DematAcc = ? WHERE id = ?';
+            const updateQuery = 'UPDATE UserData SET DematAcc = ? WHERE Email = ?';
             db.query(updateQuery, [updatedDematAcc, id]);
 
             return res.status(200).json({ message: "FlatTrade account deleted successfully" });
