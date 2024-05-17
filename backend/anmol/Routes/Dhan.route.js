@@ -64,7 +64,7 @@ const clientExists = dematAcc.some(acc => acc.clientID === clientID);
     }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/delete", async (req, res) => {
     // const { id } = req.params;
     const id = req.user.email;
     const { dhanClientId } = req.body;
