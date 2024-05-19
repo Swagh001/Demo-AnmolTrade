@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const cors = require("cors");
+const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(express.json());
@@ -42,6 +43,24 @@ app.use("/acagarwal", aCAgarwalRoute);
 app.use("/motilaloswal", motilalOswalRoute);
 app.use("/brokers", brokerRoutes);
 app.use("/updateParent",UpdateParentRoute);
+app.get("/verifytoken",(req,res)=>{
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return res.status(401).send('User not Authrozied');
+
+    try {
+        const verified = jwt.verify(token, process.env.JWT_SECRET);
+        if(verified){
+            res.status(200).send("User Verfied");
+        }
+        else{
+            res.status(400).send('Invalid Token');
+        }
+    } catch (error) {
+        res.status(400).send('Invalid Token');
+    }
+})
 
 app.listen(port, () => {
     connection.connect((err) => {
