@@ -50,14 +50,14 @@ app.get("/verifytoken",(req,res)=>{
     res.status(200).send("User Verfied");
 })
 app.use("/zerodha", zerodhaRoute);
-app.use("/angelbroking", angelbrokingRoute);
-app.use("/aliceblue", aliceblueRoute);
+app.use("/angelBroking", angelbrokingRoute);
+app.use("/aliceBlue", aliceblueRoute);
 app.use("/fyers", fyersRoute);
 app.use("/finvasia", finvasiaRoute);
 app.use("/dhan", dhanRoute);
-app.use("/flattrade", flatTradeRoute);
-app.use("/acagarwal", aCAgarwalRoute);
-app.use("/motilaloswal", motilalOswalRoute);
+app.use("/flatTrade", flatTradeRoute);
+app.use("/acAgarwal", aCAgarwalRoute);
+app.use("/motilalOswal", motilalOswalRoute);
 app.use("/brokers", brokerRoutes);
 app.use("/updateParent",UpdateParentRoute);
 
