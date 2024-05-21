@@ -31,6 +31,14 @@ app.get('/', (req, res) => {
 });
 
 app.use("/", userRoutes);
+app.get('/storetoken', (req, res) => {
+    const token = req.headers['authorization'];
+    if (token) {
+        res.send('Token Stored');
+    } else {
+        res.status(400).send('No token provided');
+    }
+});
 app.use(jwtMiddleware);
 app.use("/zerodha", zerodhaRoute);
 app.use("/angelbroking", angelbrokingRoute);
