@@ -39,6 +39,12 @@ app.get('/storetoken', (req, res) => {
         res.status(400).send('No token provided');
     }
 });
+
+app.post('/store-token', (req, res) => {
+    const { token } = req.body;
+    req.headers.authorization = `Bearer ${token}`;
+    res.json({ message: 'Token stored successfully in request headers' });
+  });
 app.use(jwtMiddleware);
 app.get("/verifytoken",(req,res)=>{
     res.status(200).send("User Verfied");
