@@ -39,18 +39,6 @@ app.get('/storetoken', (req, res) => {
         res.status(400).send('No token provided');
     }
 });
-app.use(jwtMiddleware);
-app.use("/zerodha", zerodhaRoute);
-app.use("/angelbroking", angelbrokingRoute);
-app.use("/aliceblue", aliceblueRoute);
-app.use("/fyers", fyersRoute);
-app.use("/finvasia", finvasiaRoute);
-app.use("/dhan", dhanRoute);
-app.use("/flattrade", flatTradeRoute);
-app.use("/acagarwal", aCAgarwalRoute);
-app.use("/motilaloswal", motilalOswalRoute);
-app.use("/brokers", brokerRoutes);
-app.use("/updateParent",UpdateParentRoute);
 app.get("/verifytoken",(req,res)=>{
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -69,6 +57,19 @@ app.get("/verifytoken",(req,res)=>{
         res.status(400).send('Invalid Token');
     }
 })
+app.use(jwtMiddleware);
+app.use("/zerodha", zerodhaRoute);
+app.use("/angelbroking", angelbrokingRoute);
+app.use("/aliceblue", aliceblueRoute);
+app.use("/fyers", fyersRoute);
+app.use("/finvasia", finvasiaRoute);
+app.use("/dhan", dhanRoute);
+app.use("/flattrade", flatTradeRoute);
+app.use("/acagarwal", aCAgarwalRoute);
+app.use("/motilaloswal", motilalOswalRoute);
+app.use("/brokers", brokerRoutes);
+app.use("/updateParent",UpdateParentRoute);
+
 
 app.listen(port, () => {
     connection.connect((err) => {
