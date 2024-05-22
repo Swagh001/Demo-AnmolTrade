@@ -1,0 +1,30 @@
+.container-1{
+    width: 95%;
+    margin-left: 2%;
+    /* background-color: red; */
+}
+table{
+   /* background-color: rgb(240, 239, 239); */
+   width: 100%;
+   text-align: center;
+   margin-top: 10px;
+   font-size: small;
+}
+.tableinfo{
+    border-collapse: collapse;
+}
+
+.tableHead{
+    background-color: #3A2D7D;
+    color: white;
+    font-size: medium;
+}
+.tableBody>tr,td{
+    
+    border: 1px solid #E3E3E3;
+    padding: 8px;
+}
+
+.thborder{
+    border: 1px solid #E3E3E3;
+}
