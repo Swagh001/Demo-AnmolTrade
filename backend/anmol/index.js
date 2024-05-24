@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
 
 const app = express();
 app.use(express.json());
