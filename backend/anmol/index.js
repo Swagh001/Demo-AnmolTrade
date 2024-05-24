@@ -31,6 +31,25 @@ app.get('/', (req, res) => {
     res.send('server is working');
 });
 
+  app.get('/api', async (req, res) => {
+    console.log("Received request at /api endpoint");
+    try {
+      const response = await axios.get('https://www.nseindia.com/api/option-chain-indices', {
+        params: req.query,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
+      console.log("Response data received:", response.data);
+      res.set('Access-Control-Allow-Origin', '*');
+      res.json(response.data);
+    }
+    catch (error) {
+      console.error("Error fetching data:", error.message);
+      res.status(500).send(error.toString());
+    }
+  });
+
 app.use("/", userRoutes);
 app.get('/storetoken', (req, res) => {
     const token = req.headers['authorization'];
@@ -46,24 +65,7 @@ app.post('/store-token', (req, res) => {
     req.headers.authorization = `Bearer ${token}`;
     res.json({ message: 'Token stored successfully in request headers' });
   });
-//   app.get('/api', async (req, res) => {
-//     console.log("Received request at /api endpoint");
-//     try {
-//       const response = await axios.get('https://www.nseindia.com/api/option-chain-indices', {
-//         params: req.query,
-//         headers: {
-//           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-//         }
-//       });
-//       console.log("Response data received:", response.data);
-//       res.set('Access-Control-Allow-Origin', '*');
-//       res.json(response.data);
-//     }
-//     catch (error) {
-//       console.error("Error fetching data:", error.message);
-//       res.status(500).send(error.toString());
-//     }
-//   });
+
 app.use(jwtMiddleware);
 app.get("/verifytoken",(req,res)=>{
     res.status(200).send("User Verfied");
