@@ -17,7 +17,7 @@ app.get('/api', async (req, res) => {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
       },
       // Set timeout for external API call (adjust as needed)
-      timeout: 5000 // milliseconds (default is 10000)
+      timeout: 20000 // milliseconds (default is 10000)
     });
     console.log("Response data received:", response.data);
     res.set('Access-Control-Allow-Origin', '*');
