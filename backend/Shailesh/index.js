@@ -15,15 +15,17 @@ app.get('/api', async (req, res) => {
       params: req.query,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-      }
+      },
+      // Set timeout for external API call (adjust as needed)
+      timeout: 5000 // milliseconds (default is 10000)
     });
     console.log("Response data received:", response.data);
     res.set('Access-Control-Allow-Origin', '*');
     res.json(response.data);
-  }
-  catch (error) {
+  } catch (error) {
     console.error("Error fetching data:", error.message);
-    res.status(500).send(error.toString());
+    // Send a more informative error message
+    res.status(500).send({ message: 'Error fetching data. Please try again later.' });
   }
 });
 
