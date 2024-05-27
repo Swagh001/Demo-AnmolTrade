@@ -33,6 +33,8 @@ const API_URL = 'https://www.nseindia.com/api/option-chain-indices';
 app.get('/', (req, res) => {
     res.send('server is working');
 });
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 
 app.get('/api', async (req, res) => {
     console.log("Received request at /api endpoint");
@@ -41,15 +43,12 @@ app.get('/api', async (req, res) => {
         const response = await axios.get(API_URL, {
             params: { symbol: req.query.symbol },
             headers: {
-                "User-Agent" : "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11",
+                // "User-Agent" : "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11",
                 "Referer" : "https://www1.nseindia.com/products/content/equities/equities/archieve_eq.htm",
-                // 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                 'Accept': 'application/json, text/plain, */*',
-                // 'Accept-Language': 'en-US,en;q=0.9',
-                // 'Referer': 'https://www.nseindia.com/',
-                'Origin': 'https://www.nseindia.com',
             },
-            timeout: 5000 // 5 seconds timeout
+            timeout: 1000 // 5 seconds timeout
         });
         console.log("Response data received:", response.data);
         res.set('Access-Control-Allow-Origin', '*');
