@@ -41,20 +41,25 @@ app.get('/api', async (req, res) => {
         const response = await axios.get(API_URL, {
             params: { symbol: req.query.symbol },
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept': 'application/json, text/plain, */*',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Referer': 'https://www.nseindia.com/',
+                'Origin': 'https://www.nseindia.com',
             },
             timeout: 5000 // 5 seconds timeout
         });
         console.log("Response data received:", response.data);
         res.set('Access-Control-Allow-Origin', '*');
         res.json(response.data);
-    }
-    catch (error) {
-        if (error.code === 'ECONNABORTED') {
+    } catch (error) {
+        if (error.response && error.response.status === 403) {
+            console.error("Access Denied: Ensure headers and parameters are correct.");
+            res.status(403).send("Access Denied");
+        } else if (error.code === 'ECONNABORTED') {
             console.error("Error: Request timeout");
             res.status(504).send("Request timeout");
-        }
-        else {
+        } else {
             console.error("Error fetching data:", error.message);
             res.status(500).send(error.toString());
         }
