@@ -28,38 +28,27 @@ const connection = require("./config/bd");
 const UpdateParentRoute = require("./Routes/UpdateParent.route");
 
 const port = process.env.PORT;
+const API_URL = 'https://www.nseindia.com/api/option-chain-indices';
 
 app.get('/', (req, res) => {
     res.send('server is working');
 });
 
-  app.get('/api', async (req, res) => {
+app.get('/api', async (req, res) => {
     console.log("Received request at /api endpoint");
 
-    const { symbol } = req.query;
-    const cacheKey = `option-chain-${symbol}`;
-    
-    if (cache[cacheKey] && (Date.now() - cache[cacheKey].timestamp < CACHE_TTL)) {
-        console.log("Returning cached response");
-        return res.json(cache[cacheKey].data);
-    }
     try {
-      const response = await axios.get('https://www.nseindia.com/api/option-chain-indices', {
-        params: { symbol },
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        },
-        timeout: 5000
-      });
-      cache[cacheKey] = {
-        timestamp: Date.now(),
-        data: response.data
-        };
-      console.log("Response data received:", response.data);
-      res.set('Access-Control-Allow-Origin', '*');
-      res.json(response.data);
-    }
-    catch (error) {
+        const response = await axios.get(API_URL, {
+            params: { symbol: req.query.symbol },
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            },
+            timeout: 5000 // 5 seconds timeout
+        });
+        console.log("Response data received:", response.data);
+        res.set('Access-Control-Allow-Origin', '*');
+        res.json(response.data);
+    } catch (error) {
         if (error.code === 'ECONNABORTED') {
             console.error("Error: Request timeout");
             res.status(504).send("Request timeout");
@@ -68,7 +57,7 @@ app.get('/', (req, res) => {
             res.status(500).send(error.toString());
         }
     }
-  });
+});
 
 app.use("/", userRoutes);
 app.get('/storetoken', (req, res) => {
