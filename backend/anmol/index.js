@@ -40,22 +40,33 @@ app.get('/', (req, res) => {
     const cacheKey = `option-chain-${symbol}`;
     
     if (cache[cacheKey] && (Date.now() - cache[cacheKey].timestamp < CACHE_TTL)) {
+        console.log("Returning cached response");
         return res.json(cache[cacheKey].data);
     }
     try {
       const response = await axios.get('https://www.nseindia.com/api/option-chain-indices', {
-        params: req.query,
+        params: { symbol },
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
+        },
+        timeout: 5000
       });
+      cache[cacheKey] = {
+        timestamp: Date.now(),
+        data: response.data
+        };
       console.log("Response data received:", response.data);
       res.set('Access-Control-Allow-Origin', '*');
       res.json(response.data);
     }
     catch (error) {
-      console.error("Error fetching data:", error.message);
-      res.status(500).send(error.toString());
+        if (error.code === 'ECONNABORTED') {
+            console.error("Error: Request timeout");
+            res.status(504).send("Request timeout");
+        } else {
+            console.error("Error fetching data:", error.message);
+            res.status(500).send(error.toString());
+        }
     }
   });
 
