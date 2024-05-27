@@ -48,11 +48,13 @@ app.get('/api', async (req, res) => {
         console.log("Response data received:", response.data);
         res.set('Access-Control-Allow-Origin', '*');
         res.json(response.data);
-    } catch (error) {
+    }
+    catch (error) {
         if (error.code === 'ECONNABORTED') {
             console.error("Error: Request timeout");
             res.status(504).send("Request timeout");
-        } else {
+        }
+        else {
             console.error("Error fetching data:", error.message);
             res.status(500).send(error.toString());
         }
