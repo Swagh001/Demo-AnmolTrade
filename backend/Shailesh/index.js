@@ -19,7 +19,7 @@ app.get('/api', async (req, res) => {
         'Access-Control-Allow-Origin': '*',
       },
       // Set timeout for external API call (adjust as needed)
-      timeout: 20000 // milliseconds (default is 10000)
+      timeout: 100000 // milliseconds (default is 10000)
     });
     console.log("Response data received:", response.data);
     res.set('Access-Control-Allow-Origin', '*');
